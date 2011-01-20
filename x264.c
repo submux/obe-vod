@@ -709,6 +709,7 @@ static void help( x264_param_t *defaults, int longhelp )
         "                                  - %s\n", muxer_names[0], stringify_names( buf, muxer_names ) );
     H1( "      --demuxer <string>      Specify input container format [\"%s\"]\n"
         "                                  - %s\n", demuxer_names[0], stringify_names( buf, demuxer_names ) );
+    H1( "      --input-fmt <string>    Specify input file format (requires lavf support)\n" );
     H1( "      --input-csp <string>    Specify input colorspace format for raw input\n" );
     print_csp_names( longhelp );
     H1( "      --input-depth <integer> Specify input bit depth for raw input\n" );
@@ -821,6 +822,7 @@ enum
     OPT_PULLDOWN,
     OPT_LOG_LEVEL,
     OPT_VIDEO_FILTER,
+    OPT_INPUT_FMT,
     OPT_INPUT_RES,
     OPT_INPUT_CSP,
     OPT_INPUT_DEPTH,
@@ -988,6 +990,7 @@ static struct option long_options[] =
     { "frame-packing",     required_argument, NULL, 0 },
     { "vf",          required_argument, NULL, OPT_VIDEO_FILTER },
     { "video-filter", required_argument, NULL, OPT_VIDEO_FILTER },
+    { "input-fmt",   required_argument, NULL, OPT_INPUT_FMT },
     { "input-res",   required_argument, NULL, OPT_INPUT_RES },
     { "input-csp",   required_argument, NULL, OPT_INPUT_CSP },
     { "input-depth", required_argument, NULL, OPT_INPUT_DEPTH },
@@ -1376,6 +1379,9 @@ static int parse( int argc, char **argv, x264_param_t *param, cli_opt_t *opt )
                 break;
             case OPT_VIDEO_FILTER:
                 vid_filters = optarg;
+                break;
+            case OPT_INPUT_FMT:
+                input_opt.format = optarg;
                 break;
             case OPT_INPUT_RES:
                 input_opt.resolution = optarg;
