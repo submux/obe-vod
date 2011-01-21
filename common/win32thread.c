@@ -33,6 +33,8 @@
 /* number of times to spin a thread about to block on a locked mutex before retrying and sleeping if still locked */
 #define X264_SPIN_COUNT 0
 
+#pragma warning(disable: 556)
+
 typedef struct
 {
     /* global mutex for replacing MUTEX_INITIALIZER instances */
@@ -48,7 +50,7 @@ typedef struct
 static x264_win32thread_control_t thread_control;
 
 /* _beginthreadex requires that the start routine is __stdcall */
-static __stdcall unsigned x264_win32thread_worker( void *arg )
+static unsigned __stdcall x264_win32thread_worker( void *arg )
 {
     x264_pthread_t *h = arg;
     h->ret = h->func( h->arg );

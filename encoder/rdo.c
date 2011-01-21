@@ -691,9 +691,6 @@ int quant_trellis_cavlc( x264_t *h, dctcoef *dct,
         if( (unsigned)(dct[zigzag[i]] * (dc?quant_mf[0]>>1:quant_mf[zigzag[i]]) + f-1) >= 2*f )
             break;
 
-    if( i < start )
-        goto zeroblock;
-
     /* Prepare for QNS search: calculate distortion caused by each DCT coefficient
      * rounding to be searched.
      *
@@ -702,7 +699,8 @@ int quant_trellis_cavlc( x264_t *h, dctcoef *dct,
     int i_last_nnz = b_8x8 ? i >> 2 : i;
     int coef_mask = 0;
     int round_mask = 0;
-    for( i = b_ac, j = start; i <= i_last_nnz; i++, j += step )
+
+	for( i = b_ac, j = start; i <= i_last_nnz; i++, j += step )
     {
         int coef = dct[zigzag[j]];
         int abs_coef = abs(coef);

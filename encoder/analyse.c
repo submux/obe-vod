@@ -26,8 +26,14 @@
  *****************************************************************************/
 
 #define _ISOC99_SOURCE
+
+#include "x264_config.h"
+
 #include <math.h>
+
+#if HAS_UNISTD_H
 #include <unistd.h>
+#endif
 
 #include "common/common.h"
 #include "macroblock.h"

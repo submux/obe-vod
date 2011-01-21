@@ -1177,7 +1177,7 @@ x264_t *x264_encoder_open( x264_param_t *param )
                           h->sps->i_profile_idc == PROFILE_HIGH10 ? (h->sps->b_constraint_set3 == 1 ? "High 10 Intra" : "High 10") :
                           "High 4:4:4 Predictive";
     char level[4];
-    snprintf( level, sizeof(level), "%d.%d", h->sps->i_level_idc/10, h->sps->i_level_idc%10 );
+    SNPRINTF( level, sizeof(level), "%d.%d", h->sps->i_level_idc/10, h->sps->i_level_idc%10 );
     if( h->sps->i_level_idc == 9 || ( h->sps->i_level_idc == 11 && h->sps->b_constraint_set3 ) )
         strcpy( level, "1b" );
 
@@ -2947,7 +2947,7 @@ static int x264_encoder_frame_end( x264_t *h, x264_t *thread_current,
         h->stat.f_psnr_mean_u[h->sh.i_type]  += dur * x264_psnr( ssd[1], h->param.i_width * h->param.i_height / 4 );
         h->stat.f_psnr_mean_v[h->sh.i_type]  += dur * x264_psnr( ssd[2], h->param.i_width * h->param.i_height / 4 );
 
-        snprintf( psz_message, 80, " PSNR Y:%5.2f U:%5.2f V:%5.2f",
+        SNPRINTF( psz_message, 80, " PSNR Y:%5.2f U:%5.2f V:%5.2f",
                   x264_psnr( ssd[0], h->param.i_width * h->param.i_height ),
                   x264_psnr( ssd[1], h->param.i_width * h->param.i_height / 4),
                   x264_psnr( ssd[2], h->param.i_width * h->param.i_height / 4) );
@@ -2958,7 +2958,7 @@ static int x264_encoder_frame_end( x264_t *h, x264_t *thread_current,
         double ssim_y = h->stat.frame.f_ssim
                       / (((h->param.i_width-6)>>2) * ((h->param.i_height-6)>>2));
         h->stat.f_ssim_mean_y[h->sh.i_type] += ssim_y * dur;
-        snprintf( psz_message + strlen(psz_message), 80 - strlen(psz_message),
+        SNPRINTF( psz_message + strlen(psz_message), 80 - strlen(psz_message),
                   " SSIM Y:%.5f", ssim_y );
     }
     psz_message[79] = '\0';

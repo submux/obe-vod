@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#include "config.h"
+#include "x264_config.h"
 
 #if HAVE_STDINT_H
 #include <stdint.h>
@@ -60,7 +60,12 @@
 #endif
 #endif
 
+#if defined(PARALLELSTUDIO)
+#define DECLARE_ALIGNED( var, n ) __declspec(align(n)) var
+#else
 #define DECLARE_ALIGNED( var, n ) var __attribute__((aligned(n)))
+#endif
+
 #define ALIGNED_16( var ) DECLARE_ALIGNED( var, 16 )
 #define ALIGNED_8( var )  DECLARE_ALIGNED( var, 8 )
 #define ALIGNED_4( var )  DECLARE_ALIGNED( var, 4 )
@@ -89,7 +94,11 @@
     ALIGNED_16( type name sub1 __VA_ARGS__ )
 #endif
 
+#if defined(PARALLELSTUDIO)
+#define UNINIT(x) x
+#else
 #define UNINIT(x) x=x
+#endif
 
 #if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
 #define UNUSED __attribute__((unused))
@@ -297,6 +306,14 @@ static ALWAYS_INLINE void x264_prefetch( void *p )
 #define x264_lower_thread_priority(p)
 #endif
 
+#if !defined(S_ISDIR)
+#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
+#if !defined(S_ISREG)
+#define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
+#endif
+
 static inline uint8_t x264_is_regular_file( FILE *filehandle )
 {
     struct stat file_stat;
@@ -312,5 +329,18 @@ static inline uint8_t x264_is_regular_file_path( const char *filename )
         return -1;
     return S_ISREG( file_stat.st_mode );
 }
+
+#if NEED_STRCASECMP
+int strcasecmp(const char *s1, const char *s2);
+int strncasecmp(const char *s1, const char *s2, size_t count);
+#endif
+
+#if NEED_ROUND
+double round(double x);
+#endif
+
+#if NEED_ISFINITE
+int isfinite(double x);
+#endif
 
 #endif /* X264_OSDEP_H */

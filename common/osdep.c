@@ -24,11 +24,15 @@
  * For more information, contact us at licensing@x264.com.
  *****************************************************************************/
 
-#ifndef __MINGW32__
-#include <sys/time.h>
-#else
+#include "osdep.h"
+
+#if defined(USE_WIN32_INCLUDES)
 #include <sys/types.h>
 #include <sys/timeb.h>
+#include <math.h>
+#include <float.h>
+#else
+#include <sys/time.h>
 #endif
 #include <time.h>
 
@@ -43,14 +47,14 @@ extern int ptw32_processInitialized;
 
 int64_t x264_mdate( void )
 {
-#ifndef __MINGW32__
-    struct timeval tv_date;
-    gettimeofday( &tv_date, NULL );
-    return (int64_t)tv_date.tv_sec * 1000000 + (int64_t)tv_date.tv_usec;
-#else
+#if defined(USE_WIN32_INCLUDES)
     struct timeb tb;
     ftime( &tb );
     return ((int64_t)tb.time * 1000 + (int64_t)tb.millitm) * 1000;
+#else
+    struct timeval tv_date;
+    gettimeofday( &tv_date, NULL );
+    return (int64_t)tv_date.tv_sec * 1000000 + (int64_t)tv_date.tv_usec;
 #endif
 }
 
@@ -88,4 +92,31 @@ int x264_threading_init( void )
 
     return 0;
 }
+
+#if NEED_STRCASECMP
+int strcasecmp(const char *s1, const char *s2)
+{
+	return _stricmp(s1, s2);
+}
+
+int strncasecmp(const char *s1, const char *s2, size_t count)
+{
+	return _strnicmp(s1, s2, count);
+}
+#endif
+
+#if NEED_ROUND
+double round(double x)
+{
+	return floor(x + 0.5);
+}
+#endif
+
+#if NEED_ISFINITE
+int isfinite(double x)
+{
+	return !_finite(x) && !_isnan(x);
+}
+#endif
+
 #endif

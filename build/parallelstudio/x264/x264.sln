@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{EAF909A5-FA59-4C3D-9431-0FCC20D5BCF9}") = "x264", "x264\x264.icproj", "{546269B9-290A-457A-B693-BC2ABBEA12DC}"
+EndProject
+Project("{EAF909A5-FA59-4C3D-9431-0FCC20D5BCF9}") = "x264cli", "x264cli\x264cli.icproj", "{41E40909-F712-4365-966D-EBB559A38450}"
+	ProjectSection(ProjectDependencies) = postProject
+		{76E40889-9A51-4FE8-B9FD-2979A6F69FED} = {76E40889-9A51-4FE8-B9FD-2979A6F69FED}
+		{546269B9-290A-457A-B693-BC2ABBEA12DC} = {546269B9-290A-457A-B693-BC2ABBEA12DC}
+	EndProjectSection
+EndProject
+Project("{EAF909A5-FA59-4C3D-9431-0FCC20D5BCF9}") = "libmpegts", "..\..\..\..\libmpegts\build\parallelstudio\libmpegts\libmpegts.icproj", "{76E40889-9A51-4FE8-B9FD-2979A6F69FED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{546269B9-290A-457A-B693-BC2ABBEA12DC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{546269B9-290A-457A-B693-BC2ABBEA12DC}.Debug|Win32.Build.0 = Debug|Win32
+		{546269B9-290A-457A-B693-BC2ABBEA12DC}.Release|Win32.ActiveCfg = Release|Win32
+		{546269B9-290A-457A-B693-BC2ABBEA12DC}.Release|Win32.Build.0 = Release|Win32
+		{41E40909-F712-4365-966D-EBB559A38450}.Debug|Win32.ActiveCfg = Debug|Win32
+		{41E40909-F712-4365-966D-EBB559A38450}.Debug|Win32.Build.0 = Debug|Win32
+		{41E40909-F712-4365-966D-EBB559A38450}.Release|Win32.ActiveCfg = Release|Win32
+		{41E40909-F712-4365-966D-EBB559A38450}.Release|Win32.Build.0 = Release|Win32
+		{76E40889-9A51-4FE8-B9FD-2979A6F69FED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76E40889-9A51-4FE8-B9FD-2979A6F69FED}.Debug|Win32.Build.0 = Debug|Win32
+		{76E40889-9A51-4FE8-B9FD-2979A6F69FED}.Release|Win32.ActiveCfg = Release|Win32
+		{76E40889-9A51-4FE8-B9FD-2979A6F69FED}.Release|Win32.Build.0 = Release|Win32
+		{2B89FCB9-255E-45BC-906A-B1D6CBE70B79}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B89FCB9-255E-45BC-906A-B1D6CBE70B79}.Debug|Win32.Build.0 = Debug|Win32
+		{2B89FCB9-255E-45BC-906A-B1D6CBE70B79}.Release|Win32.ActiveCfg = Release|Win32
+		{2B89FCB9-255E-45BC-906A-B1D6CBE70B79}.Release|Win32.Build.0 = Release|Win32
+		{DA0E9676-C266-477A-823C-9E4A31E6D00F}.Release|Win32.Build.0 = Release|Win32
+		{DA0E9676-C266-477A-823C-9E4A31E6D00F}.Release|Win32.ActiveCfg = Release|Win32
+		{DA0E9676-C266-477A-823C-9E4A31E6D00F}.Debug|Win32.Build.0 = Debug|Win32
+		{DA0E9676-C266-477A-823C-9E4A31E6D00F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6354D367-12A5-4E4A-AA02-7D3D5ED9AD69}.Release|Win32.Build.0 = Release|Win32
+		{6354D367-12A5-4E4A-AA02-7D3D5ED9AD69}.Release|Win32.ActiveCfg = Release|Win32
+		{6354D367-12A5-4E4A-AA02-7D3D5ED9AD69}.Debug|Win32.Build.0 = Debug|Win32
+		{6354D367-12A5-4E4A-AA02-7D3D5ED9AD69}.Debug|Win32.ActiveCfg = Debug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -23,8 +23,8 @@
  * For more information, contact us at licensing@x264.com.
  *****************************************************************************/
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,15 +32,15 @@
 #include "common.h"
 #include "display.h"
 
-static long event_mask = ConfigureNotify|ExposureMask|KeyPressMask|ButtonPressMask|StructureNotifyMask|ResizeRedirectMask;
+//static long event_mask = ConfigureNotify|ExposureMask|KeyPressMask|ButtonPressMask|StructureNotifyMask|ResizeRedirectMask;
 
-static Display *disp_display = NULL;
-static struct disp_window
+//static Display *disp_display = NULL;
+/*static struct disp_window
 {
     int init;
     Window window;
 } disp_window[10];
-
+*/
 static inline void disp_chkerror( int cond, char *e )
 {
     if( !cond )
@@ -49,32 +49,80 @@ static inline void disp_chkerror( int cond, char *e )
     abort();
 }
 
+static HWND hWnd = INVALID_HANDLE_VALUE;
+static BOOL bDone = FALSE;
+static int windowWidth = 0;
+static int windowHeight = 0;
+
+LRESULT CALLBACK MainWndProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam) 
+{
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+BOOL RegisterWindow(HINSTANCE hinstance) 
+{ 
+    WNDCLASSEX windowClass; 
+ 
+    windowClass.cbSize = sizeof(windowClass);
+    windowClass.style = CS_HREDRAW | CS_VREDRAW;
+    windowClass.lpfnWndProc = MainWndProc;
+    windowClass.cbClsExtra = 0;
+    windowClass.cbWndExtra = 0;
+    windowClass.hInstance = hinstance;
+    windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    windowClass.hbrBackground = GetStockObject(WHITE_BRUSH);
+    windowClass.lpszMenuName =  NULL;
+    windowClass.lpszClassName = TEXT("VisualizationClass");
+    windowClass.hIconSm = NULL;
+ 
+    // Register the window class. 
+ 
+    return RegisterClassEx(&windowClass); 
+} 
+
+
+void showWindow() 
+{ 
+    hWnd = CreateWindow( 
+        TEXT("VisualizationClass"),
+        TEXT("VisualizationWindow"),
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        windowWidth,
+        windowHeight,
+        (HWND) NULL,
+        (HMENU) NULL,
+        NULL,
+        (LPVOID) NULL);
+
+    if ( hWnd!=NULL ) 
+    { 
+        ShowWindow(hWnd, SW_SHOW); 
+    } 
+    else 
+    { 
+        bDone = TRUE; 
+        return; 
+    } 
+} 
+
 static void disp_init_display()
 {
-    Visual *visual;
-    int dpy_class;
-    int screen;
-    int dpy_depth;
-
-    if( disp_display )
-        return;
-    memset( &disp_window, 0, sizeof(disp_window) );
-    disp_display = XOpenDisplay( "" );
-    disp_chkerror( !disp_display, "no display" );
-    screen = DefaultScreen( disp_display );
-    visual = DefaultVisual( disp_display, screen );
-    dpy_class = visual->class;
-    dpy_depth = DefaultDepth( disp_display, screen );
-    disp_chkerror( !((dpy_class == TrueColor && dpy_depth == 32)
-        || (dpy_class == TrueColor && dpy_depth == 24)
-        || (dpy_class == TrueColor && dpy_depth == 16)
-        || (dpy_class == PseudoColor && dpy_depth == 8)),
-        "requires 8 bit PseudoColor or 16/24/32 bit TrueColor display" );
+	printf("disp_init_display()");
+	RegisterWindow(NULL);   
 }
 
 static void disp_init_window( int num, int width, int height, const unsigned char *title )
 {
-    XSetWindowAttributes xswa;
+	if(hWnd == INVALID_HANDLE_VALUE)
+	{
+		windowWidth = width;
+		windowHeight = height;
+		showWindow();
+	}
+    /*XSetWindowAttributes xswa;
     XEvent xev;
     int screen = DefaultScreen(disp_display);
     Visual *visual = DefaultVisual (disp_display, screen);
@@ -127,33 +175,40 @@ static void disp_init_window( int num, int width, int height, const unsigned cha
     XSetStandardProperties( disp_display, window, buf, buf, None, NULL, 0, shint );
     XResizeWindow( disp_display, window, width, height );
     XSync( disp_display, 1 );
-    XFree( shint );
+    XFree( shint );*/
 }
 
 void disp_sync()
 {
-    XSync( disp_display, 1 );
+    /*XSync( disp_display, 1 );*/
+	printf("disp_sync()\n");
+	MSG msg; 
+    while(PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE))
+	{ 
+		TranslateMessage(&msg); 
+		DispatchMessage(&msg); 
+	} 
 }
 
 void disp_setcolor( unsigned char *name )
 {
-    XColor c_exact, c_nearest;
+    /*XColor c_exact, c_nearest;
 
     int screen = DefaultScreen( disp_display );
     GC gc = DefaultGC( disp_display, screen );
     Colormap cm = DefaultColormap( disp_display, screen );
     Status st = XAllocNamedColor( disp_display, cm, name, &c_nearest, &c_exact );
     disp_chkerror( st != 1, "XAllocNamedColor error" );
-    XSetForeground( disp_display, gc, c_nearest.pixel );
+    XSetForeground( disp_display, gc, c_nearest.pixel );*/
 }
 
 void disp_gray( int num, char *data, int width, int height, int stride, const unsigned char *title )
 {
-    char dummy;
+    /*char dummy;*/
 
     disp_init_display();
     disp_init_window( num, width, height, title );
-    int screen = DefaultScreen( disp_display );
+    /*int screen = DefaultScreen( disp_display );
     Visual *visual = DefaultVisual( disp_display, screen );
     int dpy_depth = DefaultDepth( disp_display, screen );
     XImage *ximage = XCreateImage( disp_display, visual, dpy_depth, ZPixmap, 0, &dummy, width, height, 8, 0 );
@@ -179,7 +234,7 @@ void disp_gray( int num, char *data, int width, int height, int stride, const un
     XPutImage( disp_display, disp_window[num].window, gc, ximage, 0, 0, 0, 0, width, height );
 
     XDestroyImage( ximage );
-    XSync( disp_display, 1 );
+    XSync( disp_display, 1 );*/
 
 }
 
@@ -198,21 +253,21 @@ void disp_gray_zoom(int num, char *data, int width, int height, int stride, cons
 
 void disp_point( int num, int x1, int y1 )
 {
-    int screen = DefaultScreen( disp_display );
+    /*int screen = DefaultScreen( disp_display );
     GC gc = DefaultGC( disp_display, screen );
-    XDrawPoint( disp_display, disp_window[num].window, gc, x1, y1 );
+    XDrawPoint( disp_display, disp_window[num].window, gc, x1, y1 );*/
 }
 
 void disp_line( int num, int x1, int y1, int x2, int y2 )
 {
-    int screen = DefaultScreen( disp_display );
+    /*int screen = DefaultScreen( disp_display );
     GC gc = DefaultGC( disp_display, screen );
-    XDrawLine( disp_display, disp_window[num].window, gc, x1, y1, x2, y2 );
+    XDrawLine( disp_display, disp_window[num].window, gc, x1, y1, x2, y2 );*/
 }
 
 void disp_rect( int num, int x1, int y1, int x2, int y2 )
 {
-    int screen = DefaultScreen( disp_display );
+    /*int screen = DefaultScreen( disp_display );
     GC gc = DefaultGC( disp_display, screen );
-    XDrawRectangle( disp_display, disp_window[num].window, gc, x1, y1, x2-x1, y2-y1 );
+    XDrawRectangle( disp_display, disp_window[num].window, gc, x1, y1, x2-x1, y2-y1 );*/
 }
