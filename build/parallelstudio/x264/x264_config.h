@@ -63,3 +63,4 @@
 
 #define HAVE_LIBMPEGTS 1
 
+#define HAVE_AVS 1

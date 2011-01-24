@@ -43,6 +43,10 @@
 
 #define X264_BUILD 112
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 /* x264_t:
  *      opaque handler for encoder */
 typedef struct x264_t x264_t;
@@ -828,5 +832,8 @@ int x264_encoder_invalidate_reference( x264_t *, int64_t pts );
  *      override speedcontrol's internal clock */
 void    x264_speedcontrol_sync( x264_t *, float f_buffer_fill, int i_buffer_size );
 
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
