@@ -1,7 +1,7 @@
 /*****************************************************************************
  * lavf.c: libavformat input
  *****************************************************************************
- * Copyright (C) 2009-2010 x264 project
+ * Copyright (C) 2009-2011 x264 project
  *
  * Authors: Mike Gurlitz <mike.gurlitz@gmail.com>
  *          Steven Walters <kemuri9@gmail.com>
@@ -147,7 +147,12 @@ static int open_file( char *psz_filename, hnd_t *p_handle, video_info_t *info, c
         param->pix_fmt = opt->colorspace ? av_get_pix_fmt( opt->colorspace ) : PIX_FMT_YUV420P;
     }
 
-    FAIL_IF_ERROR( av_open_input_file( &h->lavf, psz_filename, NULL, 0, param ), "could not open input file\n" )
+    /* specify the input format. this is helpful when lavf fails to guess */
+    AVInputFormat *format = NULL;
+    if( opt->format )
+        FAIL_IF_ERROR( !(format = av_find_input_format( opt->format )), "unknown file format: %s\n", opt->format );
+
+    FAIL_IF_ERROR( av_open_input_file( &h->lavf, psz_filename, format, 0, param ), "could not open input file\n" )
     if( param )
         free( param );
     FAIL_IF_ERROR( av_find_stream_info( h->lavf ) < 0, "could not find input stream info\n" )
@@ -165,7 +170,7 @@ static int open_file( char *psz_filename, hnd_t *p_handle, video_info_t *info, c
     info->timebase_den = h->lavf->streams[i]->time_base.den;
     /* lavf is thread unsafe as calling av_read_frame invalidates previously read AVPackets */
     info->thread_safe  = 0;
-    h->vfr_input       = info->vfr;
+    h->vfr_input       = 0;
     FAIL_IF_ERROR( avcodec_open( c, avcodec_find_decoder( c->codec_id ) ),
                    "could not find decoder for video stream\n" )
 
@@ -182,6 +187,7 @@ static int open_file( char *psz_filename, hnd_t *p_handle, video_info_t *info, c
     info->num_frames = h->lavf->streams[i]->nb_frames;
     info->sar_height = c->sample_aspect_ratio.den;
     info->sar_width  = c->sample_aspect_ratio.num;
+    info->vfr        = h->vfr_input;
 
     /* avisynth stores rgb data vertically flipped. */
     if( !strcasecmp( get_filename_extension( psz_filename ), "avs" ) &&

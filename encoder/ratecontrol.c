@@ -1,7 +1,7 @@
 /*****************************************************************************
  * ratecontrol.c: ratecontrol
  *****************************************************************************
- * Copyright (C) 2005-2010 x264 project
+ * Copyright (C) 2005-2011 x264 project
  *
  * Authors: Loren Merritt <lorenm@u.washington.edu>
  *          Michael Niedermayer <michaelni@gmx.at>
@@ -519,7 +519,7 @@ void x264_ratecontrol_init_reconfigurable( x264_t *h, int b_init )
         }
         else if( h->param.i_nal_hrd && !b_init )
         {
-            x264_log( h, X264_LOG_WARNING, "VBV parameters cannot be changed when NAL HRD is in use\n" );
+            //x264_log( h, X264_LOG_WARNING, "VBV parameters cannot be changed when NAL HRD is in use\n" );
             return;
         }
 

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * ffms.c: ffmpegsource input
  *****************************************************************************
- * Copyright (C) 2009-2010 x264 project
+ * Copyright (C) 2009-2011 x264 project
  *
  * Authors: Mike Gurlitz <mike.gurlitz@gmail.com>
  *          Steven Walters <kemuri9@gmail.com>
@@ -101,7 +101,7 @@ static int open_file( char *psz_filename, hnd_t *p_handle, video_info_t *info, c
     info->sar_width    = videop->SARNum;
     info->fps_den      = videop->FPSDenominator;
     info->fps_num      = videop->FPSNumerator;
-    h->vfr_input       = info->vfr;
+    h->vfr_input       = 0;
     /* ffms is thread unsafe as it uses a single frame buffer for all frame requests */
     info->thread_safe  = 0;
 
@@ -113,6 +113,7 @@ static int open_file( char *psz_filename, hnd_t *p_handle, video_info_t *info, c
     info->csp        = frame->EncodedPixelFormat | X264_CSP_OTHER;
     info->interlaced = frame->InterlacedFrame;
     info->tff        = frame->TopFieldFirst;
+    info->vfr        = h->vfr_input;
 
     /* ffms timestamps are in milliseconds. ffms also uses int64_ts for timebase,
      * so we need to reduce large timebases to prevent overflow */
