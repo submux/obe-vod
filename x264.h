@@ -42,7 +42,6 @@
 #include "x264_config.h"
 
 #define X264_BUILD 113
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
