@@ -450,8 +450,11 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
 
 ; Symbol prefix for C linkage
 %macro cglobal 1-2+
-    %xdefine %1 mangle(program_name %+ _ %+ %1)
-    %xdefine %1.skip_prologue %1 %+ .skip_prologue
+    %ifndef cglobaled_%1
+        %xdefine %1 mangle(program_name %+ _ %+ %1)
+        %xdefine %1.skip_prologue %1 %+ .skip_prologue
+        CAT_XDEFINE cglobaled_, %1, 1
+    %endif
     %ifidn __OUTPUT_FORMAT__,elf
         global %1:function hidden
     %else
@@ -544,6 +547,7 @@ SECTION .note.GNU-stack noalloc noexec nowrite progbits
 %macro INIT_AVX 0
     INIT_XMM
     %assign avx_enabled 1
+    %define PALIGNR PALIGNR_SSSE3
     %define RESET_MM_PERMUTATION INIT_AVX
 %endmacro
 
@@ -867,6 +871,7 @@ AVX_INSTR punpcklwd, 0, 0
 AVX_INSTR punpckldq, 0, 0
 AVX_INSTR punpcklqdq, 0, 0
 AVX_INSTR pxor, 0, 0
+AVX_INSTR shufps, 0, 1
 AVX_INSTR subpd, 1, 0
 AVX_INSTR subps, 1, 0
 AVX_INSTR subsd, 1, 0

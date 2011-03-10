@@ -981,11 +981,11 @@ static int parse_zone( x264_t *h, x264_zone_t *z, char *p )
     char *tok, UNUSED *saveptr=NULL;
     z->param = NULL;
     z->f_bitrate_factor = 1;
-    if( 3 <= sscanf(p, "%u,%u,q=%u%n", &z->i_start, &z->i_end, &z->i_qp, &len) )
+    if( 3 <= sscanf(p, "%d,%d,q=%d%n", &z->i_start, &z->i_end, &z->i_qp, &len) )
         z->b_force_qp = 1;
-    else if( 3 <= sscanf(p, "%u,%u,b=%f%n", &z->i_start, &z->i_end, &z->f_bitrate_factor, &len) )
+    else if( 3 <= sscanf(p, "%d,%d,b=%f%n", &z->i_start, &z->i_end, &z->f_bitrate_factor, &len) )
         z->b_force_qp = 0;
-    else if( 2 <= sscanf(p, "%u,%u%n", &z->i_start, &z->i_end, &len) )
+    else if( 2 <= sscanf(p, "%d,%d%n", &z->i_start, &z->i_end, &len) )
         z->b_force_qp = 0;
     else
     {
@@ -1447,7 +1447,7 @@ int x264_ratecontrol_mb_qp( x264_t *h )
         float qp_offset = h->fdec->b_kept_as_ref ? h->fenc->f_qp_offset[h->mb.i_mb_xy] : h->fenc->f_qp_offset_aq[h->mb.i_mb_xy];
         /* Scale AQ's effect towards zero in emergency mode. */
         if( qp > QP_MAX_SPEC )
-            qp_offset *= (QP_MAX - qp) / (QP_MAX_SPEC - QP_MAX);
+            qp_offset *= (QP_MAX - qp) / (QP_MAX - QP_MAX_SPEC);
         qp += qp_offset;
     }
     return x264_clip3( qp + .5, h->param.rc.i_qp_min, h->param.rc.i_qp_max );
